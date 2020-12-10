@@ -31,9 +31,16 @@ const articleSchema = new mongoose.Schema({
       validator: (v) => validator.isURL(v, [{ allow_underscores: true }]),
     },
   },
+  image: {
+    type: String,
+    required: true,
+    validate: {
+      validator: (v) => /(https?:\/\/(www)?)+.+/g.test(v),
+    },
+  },
   date: {
-    type: Date,
-    default: Date.now(),
+    type: String,
+    required: true,
   },
 });
 

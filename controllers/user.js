@@ -6,6 +6,7 @@ const ValidationError = require("../middleware/errors/ValidationError");
 const NotFoundError = require("../middleware/errors/NotFoundError");
 
 const { NODE_ENV, JWT_SECRET } = process.env;
+const { ERRORS, CODES } = require("../utils/constants");
 
 // getPromise.then((promise) => {
 //   promise.then((data) => {
@@ -19,18 +20,18 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const createUser = async (req, res, next) => {
   const { email, password, name } = req.body;
 
-  if (!isEmail(email)) return res.send('email doesn"t work');
-  if (!password) return res.send('password doesn"t work');
+  if (!isEmail(email)) return res.status(CODES.badRequest).send(ERRORS.email);
+  if (!password) return res.status(CODES.badRequest).send(ERRORS.password);
 
   const hash = await bcrypt.hash(password, 10);
   try {
     const user = await User.findOne({ email });
-    if (user) return res.status(409).send({ message: "User already exists!!!" });
+    if (user) return res.status(CODES.conflict).send(ERRORS.exitingUser);
 
     const createdUser = await User.create({ email, password: hash, name });
-    if (!createdUser) throw new ValidationError("invalid data passed to the method for creating user");
+    if (!createdUser) throw new ValidationError(ERRORS.userBadRequest);
 
-    return res.status(201).send({ _id: createdUser._id, email: createdUser.email });
+    return res.status(CODES.created).send({ _id: createdUser._id, email: createdUser.email });
   } catch (error) {
     return next(error);
   }
@@ -38,54 +39,43 @@ const createUser = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
-  if (!isEmail(email)) throw new ValidationError("Incorrect Email or Password");
+  if (!isEmail(email)) throw new ValidationError(ERRORS.badCredentials);
 
   try {
     const user = await User.findUserByCredentials(email, password);
     const token = jwt.sign({ _id: user._id }, NODE_ENV === "production" ? JWT_SECRET : "some-secret-key", { expiresIn: "7d" });
     res.cookie("jwt", token, { maxAge: 3600000 * 24 * 7, httpOnly: true });
 
-    res.send({ token });
+    res.status(CODES.ok).send({ token });
   } catch (error) {
     next(error);
   }
 };
-// const login = (req, res, next) => {
-//   const { email, password } = req.body;
-
-//   if (!isEmail(email)) {
-//     throw new ValidationError("Incorrect Email or Password");
-//   }
-//   return User.findUserByCredentials(email, password).then((user) => {
-//     const token = jwt.sign({ _id: user._id },
-// NODE_ENV === "production" ? JWT_SECRET : "some-secret-key", { expiresIn: "7d" });
-//     res.cookie("jwt", token, {
-//       maxAge: 3600000 * 24 * 7,
-//       httpOnly: true,
-//     });
-//     res.send({ token });
-//   }).catch(next);
-// };
-
 const getUserInfo = async (req, res, next) => {
+  const user = await User.findById(req.params.id);
   try {
-    const user = await User.findById(req.user._id);
-    if (!user) throw new NotFoundError("User not found");
-    res.send(user);
+    if (!user) {
+      throw new NotFoundError(ERRORS.userNotFound);
+    }
+    return res.status(CODES.ok).send(user);
   } catch (error) {
     next(error);
   }
+  return user;
 };
-// const getUserInfo = (req, res, next) => {
-//   User.findById(req.user._id).then((user) => {
-//     if (!user) {
-//       throw new NotFoundError("User not found");
-//     }
-//     res.send(user);
-//   })
-//     .catch(next);
-// };
 
+const getUsers = async (req, res, next) => {
+  const user = await User.find({});
+  try {
+    if (!user) {
+      throw new NotFoundError(ERRORS.userNotFound);
+    }
+    return res.status(CODES.ok).send({ data: user });
+  } catch (error) {
+    next(error);
+  }
+  return user;
+};
 module.exports = {
-  login, createUser, getUserInfo,
+  login, createUser, getUserInfo, getUsers,
 };
