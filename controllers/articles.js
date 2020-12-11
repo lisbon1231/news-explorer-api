@@ -1,5 +1,4 @@
 const Articles = require("../models/Article");
-const ValidationError = require("../middleware/errors/ValidationError");
 const NotFoundError = require("../middleware/errors/NotFoundError");
 const ForbiddenError = require("../middleware/errors/ForbiddenError");
 const { ERRORS, CODES } = require("../utils/constants");
@@ -24,7 +23,9 @@ const createArticles = async (req, res, next) => {
     const articles = await Articles.create({
       keyword, title, text, date, source, link, image, owner,
     });
-    if (!articles) throw new ValidationError(ERRORS.articleValidation);
+    if (!articles) {
+      res.status(CODES.badRequest).send(ERRORS.articleValidation);
+    }
     res.status(CODES.ok).send(articles);
   } catch (error) {
     next(error);

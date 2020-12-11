@@ -77,7 +77,7 @@ const getOneUser = async (req, res, next) => {
     }
     throw new NotFoundError(ERRORS.userNotFound);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
