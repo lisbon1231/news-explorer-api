@@ -4,7 +4,8 @@ module.exports.validateUserCreation = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     email: Joi.string().required().email(),
-    password: Joi.string().required(),
+    password: Joi.string().min(2).required().strict()
+      .trim(),
   }),
 });
 

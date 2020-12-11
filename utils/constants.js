@@ -16,6 +16,7 @@ module.exports.ERRORS = {
   email: "should be a valid email",
   password: "please enter a valid password",
   exitingUser: "user already exits",
+  delete: "article has been deleted",
 };
 
 module.exports.CODES = {

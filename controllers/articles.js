@@ -39,7 +39,7 @@ const deleteArticle = async (req, res, next) => {
       throw new ForbiddenError(ERRORS.deleteArticlesOwn);
     } else {
       Articles.findByIdAndDelete(req.params.articleId)
-        .then(() => res.status(CODES.ok).send({ message: "Card deleted" }));
+        .then(() => res.status(CODES.ok).send(ERRORS.delete));
     }
   }).catch(next);
 };

@@ -8,15 +8,6 @@ const NotFoundError = require("../middleware/errors/NotFoundError");
 const { NODE_ENV, JWT_SECRET } = process.env;
 const { ERRORS, CODES } = require("../utils/constants");
 
-// getPromise.then((promise) => {
-//   promise.then((data) => {
-//     console.log(data);
-//   })
-// })
-
-// const promise = await getPromise();
-// const data = await promise();
-
 const createUser = async (req, res, next) => {
   const { email, password, name } = req.body;
 
@@ -76,6 +67,20 @@ const getUsers = async (req, res, next) => {
   }
   return user;
 };
+
+// get specific users
+const getOneUser = async (req, res, next) => {
+  const user = User.findById(req.params.id);
+  try {
+    if (user) {
+      return res.status(CODES.ok).send(user);
+    }
+    throw new NotFoundError(ERRORS.userNotFound);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
-  login, createUser, getUserInfo, getUsers,
+  login, createUser, getUserInfo, getUsers, getOneUser,
 };
