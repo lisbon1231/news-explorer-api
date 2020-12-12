@@ -43,9 +43,10 @@ const login = async (req, res, next) => {
   }
 };
 const getUserInfo = async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params._id);
   try {
     if (!user) {
+      console.log("89565");
       throw new NotFoundError(ERRORS.userNotFound);
     }
     return res.status(CODES.ok).send(user);
@@ -70,10 +71,11 @@ const getUsers = async (req, res, next) => {
 
 // get specific users
 const getOneUser = async (req, res, next) => {
-  const user = User.findById(req.params.id);
+  const user = User.findById(req.params._id);
+
   try {
     if (user) {
-      return res.status(CODES.ok).send(user);
+      return res.status(CODES.ok).send(res.json(user));
     }
     throw new NotFoundError(ERRORS.userNotFound);
   } catch (error) {
