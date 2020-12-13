@@ -43,7 +43,8 @@ const login = async (req, res, next) => {
   }
 };
 const getUserInfo = async (req, res, next) => {
-  const user = await User.findById(req.params._id);
+  console.log(req.user._id, ["in here"]);
+  const user = await User.findById(req.user._id);
   try {
     if (!user) {
       console.log("89565");

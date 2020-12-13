@@ -12,38 +12,35 @@ const getArticles = async (req, res, next) => {
   }
 };
 
-// const createArticles = async (req, res, next) => {
-//   const {
-//     keyword, title, text, date, source, link, image,
-//   } = req.body;
-//   // console.log(req.user);
-//   const owner = req.user;
-//   // console.log(req.body, ["coming from article"]);
-//   try {
-//     const articles = await Articles.create({
-//       keyword, title, text, date, source, link, image, owner,
-//     });
-//     if (!articles) res.status(CODES.badRequest).send(ERRORS.articleValidation);
-
-//     res.status(CODES.ok).send(articles);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
-const createArticles = (req, res, next) => {
+const createArticles = async (req, res, next) => {
   const {
     keyword, title, text, date, source, link, image,
   } = req.body;
-  console.log({ owner: req }, [858585]);
-  Articles.create({
-    keyword, title, text, date, source, link, image, owner: req.user.id,
-  })
-    .then((article) => {
-      res.status(CODES.ok).send(article);
-    })
-    .catch(next);
+  try {
+    const articles = await Articles.create({
+      keyword, title, text, date, source, link, image, owner: req.user._id,
+    });
+    if (!articles) res.status(CODES.badRequest).send(ERRORS.articleValidation);
+    if (articles) res.status(CODES.ok).send(articles);
+  } catch (error) {
+    next(error);
+  }
 };
+
+// const createArticles = (req, res, next) => {
+//   const {
+//     keyword, title, text, date, source, link, image,
+//   } = req.body;
+//   console.log({ owner: req }, [858585]);
+//   Articles.create({
+//     keyword, title, text, date, source, link, image, owner: req.user._id,
+//   })
+//     .then((article) => {
+//       console.log(article);
+//       res.status(CODES.ok).send(article);
+//     })
+//     .catch(next);
+// };
 
 const deleteArticle = async (req, res, next) => {
   Articles.findById(req.params.articleId).then((article) => {
