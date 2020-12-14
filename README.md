@@ -1,7 +1,7 @@
 # News Backend part using AWS EC 
 ### Project using the NodeJS to create an express app
 
-### check it out [HERE](www.news-explorer.es.api.students.nomoreparties.site )
+### check it out [HERE](https://www.news-explorer.tk.students.nomoreparties.site/)
 
 public ip 18.184.254.101
 

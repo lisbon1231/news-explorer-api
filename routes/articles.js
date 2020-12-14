@@ -8,8 +8,8 @@ const {
 const auth = require("../middleware/auth");
 const { createArticlesValidation, deleteArticleValidation } = require("../middleware/celebrateValidators");
 
-router.get("/", getArticles);
+router.get("/", auth, getArticles);
 router.delete("/:articleId", auth, deleteArticleValidation, deleteArticle);
-router.post("/", createArticlesValidation, createArticles);
+router.post("/", auth, createArticlesValidation, createArticles);
 
 module.exports = router;
