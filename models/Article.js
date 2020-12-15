@@ -6,7 +6,6 @@ const articleSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
     required: true,
-    select: false,
   },
   title: {
     type: String,
@@ -43,10 +42,10 @@ const articleSchema = new mongoose.Schema({
     required: true,
   },
 });
-articleSchema.methods.toJSON = function toJSON() {
-  const obj = this.toObject();
-  delete obj.owner;
-  return obj;
-};
+// articleSchema.methods.toJSON = function toJSON() {
+//   const obj = this.toObject();
+//   delete obj.owner;
+//   return obj;
+// };
 
 module.exports = mongoose.model("article", articleSchema);

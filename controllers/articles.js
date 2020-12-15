@@ -32,26 +32,27 @@ const getArticles = async (req, res, next) => {
 // };
 
 const createArticles = (req, res, next) => {
-  console.log("createArticles");
+  // console.log("createArticles");
 
   const {
     keyword, title, text, date, source, link, image,
   } = req.body;
 
-  console.log({ owner: req.user }, [858585]);
+  // console.log({ owner: req.user }, [858585]);
   Articles.create({
     keyword, title, text, date, source, link, image, owner: req.user._id,
   })
     .then((article) => {
+      // console.log(typeof article.owner, article.owner, "i am here");
       res.status(CODES.ok).send(article);
     })
     .catch(next);
 };
 
-const deleteArticle = async (req, res, next) => {
+const deleteArticle = (req, res, next) => {
   Articles.findById(req.params.articleId).then((article) => {
     if (article === null) {
-      throw new NotFoundError(ERRORS.notFound);
+      throw new NotFoundError(ERRORS.articleDoesNotExist);
     } else if (String(article.owner) !== req.user._id) {
       throw new ForbiddenError(ERRORS.deleteArticlesOwn);
     } else {

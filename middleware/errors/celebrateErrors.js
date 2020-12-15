@@ -9,7 +9,7 @@ module.exports.handlingErrors = (err, req, res, next) => {
   } else if (err.statusCode === undefined) {
     const { statusCode = 400, message } = err;
     res.status(statusCode).send({
-      message: statusCode === 400 ? "Invalid data passed" : message,
+      message: statusCode === 400 ? "Sorry what you are looking for could not be found" : message,
     });
   } else {
     const { statusCode, message } = err;

@@ -17,6 +17,7 @@ module.exports.ERRORS = {
   password: "please enter a valid password",
   exitingUser: "user already exits",
   delete: "article has been deleted",
+  articleDoesNotExist: "Sorry seems that article does not exist",
 };
 
 module.exports.CODES = {
