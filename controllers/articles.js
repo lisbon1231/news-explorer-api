@@ -6,7 +6,8 @@ const { ERRORS, CODES } = require("../utils/constants");
 const getArticles = async (req, res, next) => {
   try {
     const articles = await Articles.find({});
-    res.status(CODES.ok).send({ data: articles });
+    // console.log(articles, "coming from saved");
+    res.status(CODES.ok).send({ articles });
   } catch (error) {
     next(error);
   }
@@ -43,7 +44,7 @@ const createArticles = (req, res, next) => {
     keyword, title, text, date, source, link, image, owner: req.user._id,
   })
     .then((article) => {
-      // console.log(typeof article.owner, article.owner, "i am here");
+      // console.log(article);
       res.status(CODES.ok).send(article);
     })
     .catch(next);
@@ -56,8 +57,10 @@ const deleteArticle = (req, res, next) => {
     } else if (String(article.owner) !== req.user._id) {
       throw new ForbiddenError(ERRORS.deleteArticlesOwn);
     } else {
-      Articles.findByIdAndDelete(req.params.articleId)
-        .then(() => res.status(CODES.ok).send(ERRORS.delete));
+      Articles.findByIdAndDelete(req.params.articleId).then(() => {
+        // console.log(article);
+      })
+        .then(() => res.status(CODES.ok).send({ message: ERRORS.delete }));
     }
   }).catch(next);
 };
