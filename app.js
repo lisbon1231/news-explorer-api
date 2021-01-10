@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const helmet = require("helmet");
 const { requestLogger, errorLogger } = require("./middleware/logger");
 const allRoutes = require("./routes/index");
-const { DATABASE, ERRORS } = require("./utils/constants.js");
+const { DATABASE, ERRORS, CODES } = require("./utils/constants.js");
 const { limiter } = require("./middleware/expressLimiter");
 const { handlingErrors } = require("./middleware/errors/celebrateErrors");
 // listen to port 3000
@@ -30,6 +30,6 @@ app.use("/", allRoutes);
 app.use(errorLogger);
 
 app.use((req, res) => {
-  res.status(ERRORS.notFound).json({ message: ERRORS.notFound });
+  res.status(CODES.badRequest).json({ message: ERRORS.notFound });
 });
 app.use(handlingErrors);
